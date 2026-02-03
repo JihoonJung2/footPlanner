@@ -1,22 +1,22 @@
-import React from 'react'
+import React from 'react';
 
 function EventBox(p) {
-    return (
-      <div style={{color:'black'}}>
-        <img src={p.homeTeamLogo} alt="home" width="40" />
-        vs
-        <img src={p.awayTeamLogo} alt="away" width="40" />
-        <br />
-        {p.home} vs {p.away}
-        
+  return (
+    <div className="event-box">
+      <div className="event-date">{p.date}</div>
+      <div className="event-teams">
+        <div className="event-team">
+          <img src={p.homeTeamLogo} alt="home" />
+          <span>{p.home}</span>
+        </div>
+        <div className="vs">vs</div>
+        <div className="event-team">
+          <img src={p.awayTeamLogo} alt="away" />
+          <span>{p.away}</span>
+        </div>
       </div>
-      
-     
-    )
-    console.log(p);
-    console.log("실행");
-  }
-  
-export default EventBox
+    </div>
+  );
+}
 
-//<div style={{ color: 'red' }}>렌더링 테스트</div>
+export default EventBox;
