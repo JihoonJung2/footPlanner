@@ -1,22 +1,21 @@
-import React from 'react';
+import React from 'react'
 
 function EventBox(p) {
-  return (
-    <div className="event-box">
-      <div className="event-date">{p.date}</div>
-      <div className="event-teams">
-        <div className="event-team">
-          <img src={p.homeTeamLogo} alt="home" />
-          <span>{p.home}</span>
+    return (
+      <div className="card event-card">
+        <span className="date">{p.date}</span>
+        <div className="team-info">
+          <img src={p.homeTeamLogo} alt={p.home} />
+          <span className="team-name">{p.home}</span>
         </div>
-        <div className="vs">vs</div>
-        <div className="event-team">
-          <img src={p.awayTeamLogo} alt="away" />
-          <span>{p.away}</span>
+        <span className="vs">vs</span>
+        <div className="team-info">
+          <img src={p.awayTeamLogo} alt={p.away} />
+          <span className="team-name">{p.away}</span>
         </div>
       </div>
-    </div>
-  );
-}
+    )
+  }
+  
+export default EventBox
 
-export default EventBox;
