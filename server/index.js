@@ -1,10 +1,15 @@
+require("dotenv").config();
+const pool =require("./db.js");
+
 
 const express = require('express')
 const app = express()
+app.use(express.json());
 var cors = require('cors')
 
 app.use(cors())
-//key = 6ca0ec92e2cd72c313fd9c129edf6836b89f497455dd1d454548501b8f7e12f0
+
+console.log(process.env.APIkey);
 
 
 app.get('/', (req, res) => {
@@ -36,10 +41,40 @@ const sixMonthString= formatDate(sixMonth);
 console.log(todayString);
 console.log(nextMonthString);
 
+app.post('/signup', async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
+    // 이메일 중복 체크
+    const [rows] = await pool.query(
+      "SELECT id FROM users WHERE email = ?",
+      [email]
+    );
 
+    if (rows.length > 0) {
+      return res.status(409).json({ message: "중복된 이메일" });
+    }
+
+    // 비밀번호 해싱
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // 회원 저장
+    await pool.query(
+      "INSERT INTO users (email, password, role) VALUES (?, ?, ?)",
+      [email, hashedPassword, "USER"]
+    );
+
+    res.status(201).json({ message: "회원가입 성공!" });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "서버 에러" });
+  }
+});
+
+//한달 뒤까지 모든 일정 반환
 app.get('/api/event/', async(req, res)=>{
-  const response = await fetch("https://apiv3.apifootball.com/?action=get_events&from="+todayString+ "&to="+nextMonthString+"&league_id=152&APIkey=6ca0ec92e2cd72c313fd9c129edf6836b89f497455dd1d454548501b8f7e12f0");
+  const response = await fetch("https://apiv3.apifootball.com/?action=get_events&from="+todayString+ "&to="+nextMonthString+"&league_id=152&APIkey="+process.env.APIkey);
   const jsonData = await response.json();
   res.json( jsonData.slice(0,20).map(d => ({
     key : d.match_id,
@@ -47,14 +82,15 @@ app.get('/api/event/', async(req, res)=>{
     homeLogo: d.team_home_badge,
     away: d.match_awayteam_name,
     awayLogo: d.team_away_badge,
-    matchDate : d.match_date
+    matchDate : d.match_date,
+    league : d.league_name
   })));
  
 })
+//한달동안 특정 팀 이벤트 반환
 app.get('/api/event/:teamKey', async(req, res)=>{
   const tk = req.params.teamKey; 
-  console.log(tk);
-  const response = await fetch("https://apiv3.apifootball.com/?action=get_events&from="+todayString+ "&to="+sixMonthString+"&team_id="+tk+"&APIkey=6ca0ec92e2cd72c313fd9c129edf6836b89f497455dd1d454548501b8f7e12f0");
+  const response = await fetch("https://apiv3.apifootball.com/?action=get_events&from="+todayString+ "&to="+sixMonthString+"&team_id="+tk+"&APIkey="+process.env.APIkey);
   const jsonData = await response.json();
   res.json( jsonData.slice(0,20).map(d => ({
     key : d.match_id,
@@ -62,13 +98,15 @@ app.get('/api/event/:teamKey', async(req, res)=>{
     homeLogo: d.team_home_badge,
     away: d.match_awayteam_name,
     awayLogo: d.team_away_badge,
-    matchDate : d.match_date
+    matchDate : d.match_date,
+    league : d.league_name
   })));
  
 })
 
+//이번시즌 epl 20팀 반환
 app.get('/api/eplTeams', async(req, res)=>{
-  const response=await fetch("https://apiv3.apifootball.com/?action=get_teams&league_id=152&APIkey=6ca0ec92e2cd72c313fd9c129edf6836b89f497455dd1d454548501b8f7e12f0")
+  const response=await fetch("https://apiv3.apifootball.com/?action=get_teams&league_id=152&APIkey="+process.env.APIkey)
   const jsonData=await response.json();
   res.json(jsonData.map(d=>({
     key:d.team_key,

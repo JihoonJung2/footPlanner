@@ -16,11 +16,48 @@ body {
   max-width: 1200px;
   margin: 0 auto;
 }
+.league {
+  font-size: 0.85em; /* Slightly smaller for a tag-like feel */
+  font-weight: 600; /* Bolder text */
+  color: #fff; /* White text for contrast */
+  background-color: #28a745; /* Use the vibrant green accent color */
+  padding: 4px 8px; /* Add some padding */
+  border-radius: 5px; /* Slightly rounded corners */
+  margin-right: 10px;
+  display: inline-block; /* Ensures padding and radius apply correctly */
+  text-transform: uppercase; /* Make it uppercase like some titles */
+  letter-spacing: 0.5px;
+}
+.champsLeague {
+  font-size: 0.85em; /* Slightly smaller for a tag-like feel */
+  font-weight: 600; /* Bolder text */
+  color: #fff; /* White text for contrast */
+  background-color: #dd4b38; /* Use the vibrant green accent color */
+  padding: 4px 8px; /* Add some padding */
+  border-radius: 5px; /* Slightly rounded corners */
+  margin-right: 10px;
+  display: inline-block; /* Ensures padding and radius apply correctly */
+  text-transform: uppercase; /* Make it uppercase like some titles */
+  letter-spacing: 0.5px;
+}
+.titleLogo{
+  width : 500px;
+  height : 300px;
+  object-fit: contain;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+  margin-bottom: 0;
+}
 
+.titleLogo:hover {
+  transform: scale(1.1);
+}
 .title h3 {
   font-size: 2.5em;
   color: #28a745; /* Vibrant green for main title */
   margin-bottom: 40px;
+  margin-top :0px;
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;

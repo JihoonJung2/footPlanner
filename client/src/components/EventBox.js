@@ -3,6 +3,7 @@ import React from 'react'
 function EventBox(p) {
     return (
       <div className="card event-card">
+        <span className={p.league?.startsWith("UEFA Champions")?"champsLeague":p.league!=="Premier League"?"league":""}>{p.league}</span>
         <span className="date">{p.date}</span>
         <div className="team-info">
           <img src={p.homeTeamLogo} alt={p.home} />

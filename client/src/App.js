@@ -1,11 +1,7 @@
 import './App.css';
-import 첼시_로고 from "./첼시 로고.png"
-import 맨유_로고 from "./맨유 로고.png"
-import 리버풀_로고 from "./리버풀 로고.png"
-import 아스날_로고 from "./아스날 로고.png"
-import 맨시티_로고 from "./맨시티 로고.png"
-import 토트넘_로고 from "./토트넘 로고.png"
-import 아스톤빌라_로고 from "./아스톤빌라 로고.png"
+import PL_LOGO from './premier-league-logo.jpg';
+
+
 import EventBox from "./components/EventBox"
 import TeamBox from "./components/TeamBox"
 import { useState, useEffect } from 'react';
@@ -63,6 +59,11 @@ function App() {
     fetchEvent();
     fetchTeam();
   }, []);
+
+  useEffect(() => {
+    console.log(events);
+  }, [events]);
+
   
   const changeSchedule=(key)=>{
     
@@ -75,12 +76,12 @@ function App() {
 
   return (
     <div className="App">
-      <div className="title"><h3>EPL Schedule</h3></div>
+      <div className="title"><img src={PL_LOGO} alt="PL LOGO" className="titleLogo" onClick={()=>changeSchedule()}></img><h3>EPL Schedule</h3></div>
       <div className="page">
         <div className="list-container">
           <h2 className="container-title">Upcoming Matches</h2>
           {events.map((e, i) => (
-            <EventBox key={e.key} homeTeamLogo={e.homeLogo} home={e.home} awayTeamLogo={e.awayLogo} away={e.away} date={e.matchDate} />
+            <EventBox key={e.key} homeTeamLogo={e.homeLogo} home={e.home} awayTeamLogo={e.awayLogo} away={e.away} date={e.matchDate} league={e.league}/>
           ))}
         </div>
 
