@@ -9,21 +9,21 @@ var cors = require('cors')
 
 app.use(cors())
 
-console.log(process.env.APIkey);
+
 
 
 app.get('/', (req, res) => {
   res.send('Hello Worldddddd')
 })
 
-
+//날짜
 const today = new Date();
 
 const fromDate = new Date(today);
 const toDate = new Date(today);
 const sixMonth=new Date(today);
 
-// 다음달로 이동
+
 toDate.setMonth(toDate.getMonth() + 1);
 sixMonth.setMonth(sixMonth.getMonth()+6);
 
@@ -41,6 +41,7 @@ const sixMonthString= formatDate(sixMonth);
 console.log(todayString);
 console.log(nextMonthString);
 
+//회원가입
 app.post('/signup', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -71,7 +72,22 @@ app.post('/signup', async (req, res) => {
     res.status(500).json({ message: "서버 에러" });
   }
 });
+//로그인
+// app.post('/login', async(req, res) =>
+//   { try 
+//     { const { email, password } = req.body();
+//       const [rows] = await pool.query("SELECT id, password, role FROM users WHERE email=?", [email]);
+//       if(rows.length==0)return res.status(409).json({message:"이메일 또는 비밀번호 오류"});
+//       const user
 
+    
+//     } 
+//     catch(err) {
+//       console.error(err);
+//       res.status(500).json({message:"서버 에러"});
+//      }
+//   }
+// )
 //한달 뒤까지 모든 일정 반환
 app.get('/api/event/', async(req, res)=>{
   const response = await fetch("https://apiv3.apifootball.com/?action=get_events&from="+todayString+ "&to="+nextMonthString+"&league_id=152&APIkey="+process.env.APIkey);
