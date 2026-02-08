@@ -1,6 +1,7 @@
 require("dotenv").config();
 const pool =require("./db.js");
-
+// const bcrypt = require('bcryptjs'); // Add this line
+// const jwt = require('jsonwebtoken'); // Add this line
 
 const express = require('express')
 const app = express()
@@ -73,25 +74,33 @@ app.post('/signup', async (req, res) => {
   }
 });
 //로그인
-// app.post('/login', async(req, res) =>
-//   { try 
-//     { const { email, password } = req.body();
-//       const [rows] = await pool.query("SELECT id, password, role FROM users WHERE email=?", [email]);
-//       if(rows.length==0)return res.status(409).json({message:"이메일 또는 비밀번호 오류"});
-//       const user
-
-    
-//     } 
-//     catch(err) {
-//       console.error(err);
-//       res.status(500).json({message:"서버 에러"});
-//      }
-//   }
-// )
+app.post('/login', async(req, res) =>
+  { try 
+    { const { email, password } = req.body;
+      const [rows] = await pool.query("SELECT id, password, role FROM users WHERE email=?", [email]);
+      if(rows.length==0)return res.status(409).json({message:"이메일 오류"});
+      const user=rows[0];
+      const isMatch=await bcrypt.compare(password, user.password);
+      if(!isMatch){return res.status(409).json({message:"비밀번호 오류"})};
+      const token=jwt.sign(
+        {userId: user.id, role:user.role},process.env.JWT_SECRET,{expiresIn:"1h"}
+      );
+      res.json(token);
+    } 
+    catch(err) {
+      console.error(err);
+      res.status(500).json({message:"서버 에러"});
+     }
+  }
+);
 //한달 뒤까지 모든 일정 반환
 app.get('/api/event/', async(req, res)=>{
   const response = await fetch("https://apiv3.apifootball.com/?action=get_events&from="+todayString+ "&to="+nextMonthString+"&league_id=152&APIkey="+process.env.APIkey);
+  
   const jsonData = await response.json();
+ 
+
+  console.log(jsonData);
   res.json( jsonData.slice(0,20).map(d => ({
     key : d.match_id,
     home: d.match_hometeam_name,
@@ -129,7 +138,7 @@ app.get('/api/eplTeams', async(req, res)=>{
     name:d.team_name,
     logo:d.team_badge
   })))
-  console.log(jsonData);
+  
 })
 
 // async function fetchTeam() {
