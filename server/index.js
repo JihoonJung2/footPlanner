@@ -1,7 +1,7 @@
 require("dotenv").config();
 const pool =require("./db.js");
-// const bcrypt = require('bcryptjs'); // Add this line
-// const jwt = require('jsonwebtoken'); // Add this line
+ const bcrypt = require('bcryptjs'); // Add this line
+ const jwt = require('jsonwebtoken'); // Add this line
 
 const express = require('express')
 const app = express()
@@ -46,7 +46,7 @@ console.log(nextMonthString);
 app.post('/signup', async (req, res) => {
   try {
     const { email, password } = req.body;
-
+    console.log(email, password);
     // 이메일 중복 체크
     const [rows] = await pool.query(
       "SELECT id FROM users WHERE email = ?",
@@ -85,7 +85,7 @@ app.post('/login', async(req, res) =>
       const token=jwt.sign(
         {userId: user.id, role:user.role},process.env.JWT_SECRET,{expiresIn:"1h"}
       );
-      res.json(token);
+      res.json({message:"로그인 성공", token:token});
     } 
     catch(err) {
       console.error(err);
@@ -93,6 +93,9 @@ app.post('/login', async(req, res) =>
      }
   }
 );
+//즐겨찾기 추가
+app.length
+
 //한달 뒤까지 모든 일정 반환
 app.get('/api/event/', async(req, res)=>{
   const response = await fetch("https://apiv3.apifootball.com/?action=get_events&from="+todayString+ "&to="+nextMonthString+"&league_id=152&APIkey="+process.env.APIkey);

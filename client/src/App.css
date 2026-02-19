@@ -177,3 +177,103 @@ body {
 .team-card button:hover {
   background-color: #218838; /* Darker green on hover */
 }
+
+/* Styles for auth buttons */
+.auth-buttons {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.auth-buttons button {
+  background-color: #007bff; /* Blue for auth buttons */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  margin-right: 10px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.auth-buttons button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* Dark semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure it's on top of everything */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.modal-content h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.modal-content form div {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.modal-content label {
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
+  font-weight: 500;
+}
+
+.modal-content input[type="email"],
+.modal-content input[type="password"] {
+  width: calc(100% - 20px);
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+.modal-content button {
+  background-color: #28a745; /* Green for action buttons */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  margin-top: 15px;
+  margin-right: 10px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.modal-content button[type="button"] { /* Close button style */
+  background-color: #6c757d; /* Gray for close button */
+}
+
+.modal-content button:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+.modal-content button[type="button"]:hover {
+  background-color: #5a6268; /* Darker gray on hover */
+}
