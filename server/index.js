@@ -70,7 +70,7 @@ app.post('/signup', async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "서버 에러" });
+    res.status(500).json({ message: "서버 에러(회원가입)" });
   }
 });
 //로그인
@@ -89,13 +89,67 @@ app.post('/login', async(req, res) =>
     } 
     catch(err) {
       console.error(err);
-      res.status(500).json({message:"서버 에러"});
+      res.status(500).json({message:"서버 에러(로그인)"});
      }
   }
 );
 //즐겨찾기 추가
-app.length
+app.post('/favorites', async (req, res) => {
+  try {
+    const { teamId } = req.body;
 
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "토큰 없음" });
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      return res.status(401).json({ message: "토큰 오류" });
+    }
+
+    const userId = decoded.userId;
+    
+    const [rows] = await pool.query(
+      "SELECT id FROM favorite_team WHERE user_id=? AND favorite_team_id=?",
+      [userId, teamId]
+    );
+
+    if (rows.length === 0) {
+      await pool.query(
+        "INSERT INTO favorite_team (user_id, favorite_team_id) VALUES (?, ?)",
+        [userId, teamId]
+      );
+      return res.json({ message: "즐겨찾기에 추가되었습니다." });
+    } else {
+      return res.status(409).json({ message: "이미 추가된 팀입니다." });
+    }
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "서버 에러(즐겨찾기)" });
+  }
+});
+//즐겨찾기 확인
+app.get('/getfavorites', async(req, res)=>{
+  try{
+    const token=req.headers.authorization?.split(" ")[1];
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+    return res.status(401).json({ message: "토큰 오류" });
+    }
+    userId=decoded.userId;
+    const [rows]=await pool.query("SELECT favorite_team_id FROM favorite_team WHERE user_id=?",[userId]);
+    const favoriteTeamIds = rows.map(r => r.favorite_team_id);
+    res.json(favoriteTeamIds);
+    console.log(favoriteTeamIds);
+  }catch(e) {
+    console.error(err);
+    res.status(500).json({ message: "서버 에러(즐겨찾기)" });
+  }
+})
 //한달 뒤까지 모든 일정 반환
 app.get('/api/event/', async(req, res)=>{
   const response = await fetch("https://apiv3.apifootball.com/?action=get_events&from="+todayString+ "&to="+nextMonthString+"&league_id=152&APIkey="+process.env.APIkey);
@@ -115,6 +169,28 @@ app.get('/api/event/', async(req, res)=>{
   })));
  
 })
+//여러개팀 일정
+app.get('/api/events', async (req, res) => {
+  try {
+    const teamIds = req.query.teamIds.split(",");
+
+    const teamQuery = teamIds
+      .map(id => `team_id=${id}`)
+      .join("&");
+
+    const response = await fetch(
+      `https://apiv3.apifootball.com/?action=get_events&from=${todayString}&to=${sixMonthString}&${teamQuery}&APIkey=${process.env.APIkey}`
+    );
+
+    const jsonData = await response.json();
+
+    res.json(jsonData);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "서버 에러" });
+  }
+});
 //한달동안 특정 팀 이벤트 반환
 app.get('/api/event/:teamKey', async(req, res)=>{
   const tk = req.params.teamKey; 
@@ -131,6 +207,7 @@ app.get('/api/event/:teamKey', async(req, res)=>{
   })));
  
 })
+
 
 //이번시즌 epl 20팀 반환
 app.get('/api/eplTeams', async(req, res)=>{

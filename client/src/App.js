@@ -6,6 +6,7 @@ import EventBox from "./components/EventBox"
 import TeamBox from "./components/TeamBox"
 import SignupLoginModal from './components/SignupLoginModal'; 
 import { useState, useEffect } from 'react';
+import {AddFavorites, getFavorites} from './components/Favorites';
 //2월 8일 api키 zxczmflxx3
 function App() {
   //로그인, 회원가입 모달관리
@@ -22,8 +23,13 @@ function App() {
   const [isLoggedIn, setIsLoggedIn]=useState(false);
 
   const handleLogout = () => {
+    if(isLoggedIn)
+    alert("로그아웃 되었습니다.");      
+  else   
+    alert("로그인이 되어있지않습니다.");  
   localStorage.removeItem("token");  
-  setIsLoggedIn(false);              
+  setIsLoggedIn(false);  
+     
 };
 
   const [teams, setTeams] = useState([]);
@@ -32,7 +38,7 @@ function App() {
   //key, home, homeLogo, away, awayLogo, matchDate
   const [favorites, setFavorates] = useState([]);
 
-
+  const listFavorites= //
 
   useEffect(()=>{
     async function loadFunction(){            //fetch
@@ -64,16 +70,14 @@ function App() {
     else{data=await fetchEvent();}
     setEvents(data);
   }
- const addFavorites=()=>{
-  console.log("add success");
- }
-
+ 
   return (
     <div className="App">
       <div className="auth-buttons"> {/* Container for signup/login buttons */}
         <button onClick={openSignupModal}>Signup</button>
         <button onClick={openLoginModal}>Login</button>
         <button onClick={handleLogout}>Logout</button>
+        <button onClick={getFavorites}>즐겨찾기 확인</button>
       </div>
       <div className="title"><img src={PL_LOGO} alt="PL LOGO" className="titleLogo" onClick={()=>changeSchedule()}></img><h3>EPL Schedule</h3></div>
       <div className="page">
@@ -87,7 +91,7 @@ function App() {
         <div className="list-container">
           <h2 className="container-title">Teams</h2>
            {teams?.map((t, i) => (
-            <TeamBox key={t.key} keyId={t.key} name={t.name} logo={t.logo} changeSchedule={changeSchedule} showModal={openLoginModal} isLoggedIn={isLoggedIn} addFavorites={addFavorites}/>
+            <TeamBox key={t.key} keyId={t.key} name={t.name} logo={t.logo} changeSchedule={changeSchedule} showModal={openLoginModal} isLoggedIn={isLoggedIn} addFavorites={() => AddFavorites(t.key)}/>
           ))}
         
         </div>

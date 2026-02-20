@@ -8,8 +8,8 @@ export async function handleSignup(p){
             headers:{"Content-Type":"application/json"},
             body:JSON.stringify({email:p.email, password:p.password})});
         const data = await res.json();
-        if(res.ok){alert(data.message);return}    //회원가입 성공
-        else{alert(data.message);return}             //실패
+        alert(data.message);
+        return;  
 
             
             

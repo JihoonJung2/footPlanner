@@ -10,7 +10,9 @@ function TeamBox(p){
       <span className="team-name-text">{p.name}</span>
       <button onClick={()=>{
         if(!p.isLoggedIn){p.showModal()}
-        else if(p.isLoggedIn){p.addFavorites()}
+        else if(p.isLoggedIn){p.addFavorites()
+          
+        }
         }}>
         
           
