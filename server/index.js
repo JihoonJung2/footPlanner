@@ -144,7 +144,7 @@ app.get('/getfavorites', async(req, res)=>{
     const [rows]=await pool.query("SELECT favorite_team_id FROM favorite_team WHERE user_id=?",[userId]);
     const favoriteTeamIds = rows.map(r => r.favorite_team_id);
     res.json(favoriteTeamIds);
-    console.log(favoriteTeamIds);
+    
   }catch(e) {
     console.error(err);
     res.status(500).json({ message: "서버 에러(즐겨찾기)" });
@@ -157,7 +157,7 @@ app.get('/api/event/', async(req, res)=>{
   const jsonData = await response.json();
  
 
-  console.log(jsonData);
+  
   res.json( jsonData.slice(0,20).map(d => ({
     key : d.match_id,
     home: d.match_hometeam_name,
@@ -170,21 +170,27 @@ app.get('/api/event/', async(req, res)=>{
  
 })
 //여러개팀 일정
-app.get('/api/events', async (req, res) => {
+app.get('/api/teams', async (req, res) => {
   try {
     const teamIds = req.query.teamIds.split(",");
-
-    const teamQuery = teamIds
-      .map(id => `team_id=${id}`)
-      .join("&");
-
+    
+    const teamQuery = teamIds.map(id => `team_id=${id}`).join("&");
     const response = await fetch(
       `https://apiv3.apifootball.com/?action=get_events&from=${todayString}&to=${sixMonthString}&${teamQuery}&APIkey=${process.env.APIkey}`
     );
 
     const jsonData = await response.json();
 
-    res.json(jsonData);
+   res.json( jsonData.slice(0,20).map(d => ({
+    key : d.match_id,
+    home: d.match_hometeam_name,
+    homeLogo: d.team_home_badge,
+    away: d.match_awayteam_name,
+    awayLogo: d.team_away_badge,
+    matchDate : d.match_date,
+    league : d.league_name
+  })));
+    
 
   } catch (err) {
     console.error(err);
@@ -212,6 +218,19 @@ app.get('/api/event/:teamKey', async(req, res)=>{
 //이번시즌 epl 20팀 반환
 app.get('/api/eplTeams', async(req, res)=>{
   const response=await fetch("https://apiv3.apifootball.com/?action=get_teams&league_id=152&APIkey="+process.env.APIkey)
+  const jsonData=await response.json();
+  res.json(jsonData.map(d=>({
+    key:d.team_key,
+    name:d.team_name,
+    logo:d.team_badge
+  })))
+  
+})
+//특정 팀 반환
+app.get('/api/team', async(req, res)=>{
+  const teamId = req.query.teamId
+ 
+  const response=await fetch("https://apiv3.apifootball.com/?action=get_teams&team_id="+teamId+"&APIkey="+process.env.APIkey)
   const jsonData=await response.json();
   res.json(jsonData.map(d=>({
     key:d.team_key,

@@ -32,7 +32,7 @@ export async function getFavorites(){
             },
         })
         const data = await res.json();
-        console.log(data);
+      
         return data;
 
     }catch(e){console.log(e);alert("서버에러")}

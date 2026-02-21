@@ -37,8 +37,26 @@ export async function fetchEvent() {
       const jsonData = await response.json();
       return jsonData;
     } catch (error) {
-      console.error("Failed to fetch events:", error);
+      console.error("Failed to fetch team:", error);
     }
   }
-  
+
+ export async function fetchTeams(teamIds) {
+  try {
+   
+    const query = teamIds.join(','); 
+    
+    const response = await fetch(`http://localhost:5000/api/teams?teamIds=${query}`);
+    
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    
+    const jsonData = await response.json();
+    return jsonData;
+    
+  } catch (error) {
+    console.error("Failed to fetch teams:", error);
+  }
+}
   

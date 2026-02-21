@@ -6,7 +6,8 @@ import EventBox from "./components/EventBox"
 import TeamBox from "./components/TeamBox"
 import SignupLoginModal from './components/SignupLoginModal'; 
 import { useState, useEffect } from 'react';
-import {AddFavorites, getFavorites} from './components/Favorites';
+import {AddFavorites} from './components/Favorites';
+import FavoriteBox from './components/FavoriteBox';
 //2월 8일 api키 zxczmflxx3
 function App() {
   //로그인, 회원가입 모달관리
@@ -36,7 +37,7 @@ function App() {
   //key, name, logo
   const [events, setEvents] = useState([]);
   //key, home, homeLogo, away, awayLogo, matchDate
-  const [favorites, setFavorates] = useState([]);
+  
 
   const listFavorites= //
 
@@ -70,15 +71,18 @@ function App() {
     else{data=await fetchEvent();}
     setEvents(data);
   }
- 
+  useEffect(()=>{
+    console.log(events);
+  },[events])
   return (
     <div className="App">
-      <div className="auth-buttons"> {/* Container for signup/login buttons */}
+      <div className="auth-buttons"> 
         <button onClick={openSignupModal}>Signup</button>
         <button onClick={openLoginModal}>Login</button>
         <button onClick={handleLogout}>Logout</button>
-        <button onClick={getFavorites}>즐겨찾기 확인</button>
+      
       </div>
+      <FavoriteBox isLoggedIn={isLoggedIn} changeSchedule={changeSchedule} setEvents={setEvents} />
       <div className="title"><img src={PL_LOGO} alt="PL LOGO" className="titleLogo" onClick={()=>changeSchedule()}></img><h3>EPL Schedule</h3></div>
       <div className="page">
         <div className="list-container">
