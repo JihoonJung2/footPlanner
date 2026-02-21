@@ -41,8 +41,8 @@ body {
   letter-spacing: 0.5px;
 }
 .titleLogo{
-  width : 500px;
-  height : 300px;
+  width : 100px;
+  height : 60px;
   object-fit: contain;
   flex-shrink: 0;
   cursor: pointer;

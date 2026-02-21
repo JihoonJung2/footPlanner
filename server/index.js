@@ -169,19 +169,43 @@ app.get('/api/event/', async(req, res)=>{
   })));
  
 })
+
 //여러개팀 일정
-app.get('/api/teams', async (req, res) => {
-  try {
-    const teamIds = req.query.teamIds.split(",");
+// app.get('/api/teams', async (req, res) => {
+//   try {
+//     const teamIds = req.query.teamIds.split(",");
     
-    const teamQuery = teamIds.map(id => `team_id=${id}`).join("&");
-    const response = await fetch(
-      `https://apiv3.apifootball.com/?action=get_events&from=${todayString}&to=${sixMonthString}&${teamQuery}&APIkey=${process.env.APIkey}`
-    );
+//     const teamQuery = teamIds.map(id => `team_id=${id}`).join("&");
+//     const response = await fetch(
+//       `https://apiv3.apifootball.com/?action=get_events&from=${todayString}&to=${sixMonthString}&${teamQuery}&APIkey=${process.env.APIkey}`
+//     );
 
-    const jsonData = await response.json();
+//     const jsonData = await response.json();
 
-   res.json( jsonData.slice(0,20).map(d => ({
+//    res.json( jsonData.slice(0,20).map(d => ({
+//     key : d.match_id,
+//     home: d.match_hometeam_name,
+//     homeLogo: d.team_home_badge,
+//     away: d.match_awayteam_name,
+//     awayLogo: d.team_away_badge,
+//     matchDate : d.match_date,
+//     league : d.league_name
+//   })));
+    
+
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: "서버 에러" });
+//   }
+// });
+//특정 팀 이벤트 반환
+//
+app.get('/api/event/:teamKey', async(req, res)=>{
+  const tk = req.params.teamKey; 
+  const response = await fetch("https://apiv3.apifootball.com/?action=get_events&from="+todayString+ "&to="+sixMonthString+"&team_id="+tk+"&APIkey="+process.env.APIkey);
+  const jsonData = await response.json();
+  
+  res.json( jsonData.slice(0,20).map(d => ({
     key : d.match_id,
     home: d.match_hometeam_name,
     homeLogo: d.team_home_badge,
@@ -190,18 +214,14 @@ app.get('/api/teams', async (req, res) => {
     matchDate : d.match_date,
     league : d.league_name
   })));
-    
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "서버 에러" });
-  }
-});
-//한달동안 특정 팀 이벤트 반환
-app.get('/api/event/:teamKey', async(req, res)=>{
-  const tk = req.params.teamKey; 
-  const response = await fetch("https://apiv3.apifootball.com/?action=get_events&from="+todayString+ "&to="+sixMonthString+"&team_id="+tk+"&APIkey="+process.env.APIkey);
+ 
+})
+//특정 리그 이벤트 반환
+app.get('/api/leagueEvent/:leagueKey', async(req, res)=>{
+  const tk = req.params.leagueKey; 
+  const response = await fetch("https://apiv3.apifootball.com/?action=get_events&from="+todayString+ "&to="+nextMonthString+"&league_id="+tk+"&APIkey="+process.env.APIkey);
   const jsonData = await response.json();
+
   res.json( jsonData.slice(0,20).map(d => ({
     key : d.match_id,
     home: d.match_hometeam_name,
@@ -215,6 +235,7 @@ app.get('/api/event/:teamKey', async(req, res)=>{
 })
 
 
+
 //이번시즌 epl 20팀 반환
 app.get('/api/eplTeams', async(req, res)=>{
   const response=await fetch("https://apiv3.apifootball.com/?action=get_teams&league_id=152&APIkey="+process.env.APIkey)
@@ -226,6 +247,22 @@ app.get('/api/eplTeams', async(req, res)=>{
   })))
   
 })
+//리그 별 순위대로 팀 반환 overall_league_position
+app.get('/api/teams/:leagueId', async(req, res)=>{
+  
+  const leagueId=req.params.leagueId;
+  
+  const response=await fetch("https://apiv3.apifootball.com/?action=get_standings&league_id="+leagueId+"&APIkey="+process.env.APIkey);
+  const jsonData=await response.json();
+  res.json(jsonData.map(d=>({
+    key:d.team_id,
+    ranking:d.overall_league_position,
+    name:d.team_name,
+    logo:d.team_badge
+  })))
+  
+})
+
 //특정 팀 반환
 app.get('/api/team', async(req, res)=>{
   const teamId = req.query.teamId
@@ -239,6 +276,7 @@ app.get('/api/team', async(req, res)=>{
   })))
   
 })
+
 
 // async function fetchTeam() {
 //   const response = await fetch("https://apiv3.apifootball.com/?action=get_events&from=2026-01-25&to=2026-02-25&league_id=152&APIkey=6ca0ec92e2cd72c313fd9c129edf6836b89f497455dd1d454548501b8f7e12f0&team_id=88");
