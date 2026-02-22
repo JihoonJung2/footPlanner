@@ -96,6 +96,7 @@ app.post('/login', async(req, res) =>
 //즐겨찾기 추가
 app.post('/favorites', async (req, res) => {
   try {
+    
     const { teamId } = req.body; //const teamId=req.body.teamId -->이거랑 같음
 
     const token = req.headers.authorization?.split(" ")[1];
@@ -105,7 +106,7 @@ app.post('/favorites', async (req, res) => {
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (err) {
-      console.err(err);
+      console.error(err);
       return res.status(401).json({ message: "토큰 오류" });
     }
 
