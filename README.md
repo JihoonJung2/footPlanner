@@ -24,4 +24,4 @@
 
 ---
 
-[시연 영상]([URL](https://youtu.be/-h2fd498hEQ))
+[시연 영상](https://youtu.be/-h2fd498hEQ)
