@@ -69,24 +69,14 @@ export async function fetchEvent() {
     }
   }
 
-export async function getTeam(favId) {
-  try {
-    const res = await fetch(
-      `http://localhost:5000/api/team?teamId=${favId}`
-    );
+  export async function getTeam(favId) {
+    try{
+    const res = await fetch(`http://localhost:5000/api/team?teamId=${favId}`);
     const data = await res.json();
-
-    if (!data || data.length === 0) {
-      console.log("팀 없음:", favId);
-      return null;
-    }
-
-    return data[0];
-  } catch (e) {
-    console.log(e);
-    return null;
+   
+    return data[0]; 
+  }catch(e){console.log(e); return null}
   }
-}
 
 
 //  export async function fetchTeams(teamIds) {

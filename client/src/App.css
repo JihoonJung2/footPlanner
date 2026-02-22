@@ -111,16 +111,11 @@ body {
   transition: all 0.2s ease-in-out;
 }
 
-.card:hover {
-  border-color: #28a745;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transform: translateY(-2px);
-}
+
 
 .card img {
   width: 35px;
   height: 35px;
-  margin-right: 15px;
   object-fit: contain;
 }
 
@@ -154,12 +149,44 @@ body {
 
 .team-card {
   justify-content: flex-start;
+  align-items: center; /* Ensure items are vertically centered in the card */
+}
+
+.team-card .team-logo-container {
+  margin-right: 15px; /* Added margin to the container */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-card .team-logo-container img {
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.team-card .team-logo-container img:hover {
+  transform: scale(1.1);
+}
+
+.team-card .team-details {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Allow details to take available space */
 }
 
 .team-card .team-name-text {
   font-weight: 500;
   color: #333;
-  flex-grow: 1; /* Allow name to take available space */
+}
+
+.team-card .team-ranking,
+.team-card .team-winning-point {
+  font-size: 0.9em; /* Slightly larger */
+  font-weight: 600; /* Bolder */
+  color: #555; /* Slightly darker than #777 */
+  margin-left: 0;
+  margin-top: 2px; /* Small space between them and the name/each other */
+  display: block; /* Ensure they take up full width and stack */
 }
 
 .team-card button {

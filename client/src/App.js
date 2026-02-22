@@ -60,7 +60,7 @@ function App() {
          const eventData= await fetchEvent();
          const teamData= await fetchTeams(leagueId);
 
-
+        console.log(teamData);
          setEvents(eventData);
          setTeams(teamData);
       }catch(err){console.error(err);}
@@ -133,7 +133,7 @@ useEffect(() => {
         <div className="list-container">
           <h2 className="container-title">Teams</h2>
            {teams?.map((t, i) => (
-            <TeamBox key={t.key} keyId={t.key} name={t.name} logo={t.logo} changeSchedule={changeSchedule} showModal={openLoginModal} isLoggedIn={isLoggedIn} addFavorites={() => AddFavorites(t.key)} setFavoriteId={setFavoriteId}/>
+            <TeamBox key={t.key} keyId={t.key} name={t.name} logo={t.logo} changeSchedule={changeSchedule} showModal={openLoginModal} isLoggedIn={isLoggedIn} addFavorites={() => AddFavorites(t.key)} setFavoriteId={setFavoriteId} winningPoint={t.winningPoint} ranking={t.ranking}/>
           ))}
         
         </div>

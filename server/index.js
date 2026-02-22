@@ -96,7 +96,7 @@ app.post('/login', async(req, res) =>
 //즐겨찾기 추가
 app.post('/favorites', async (req, res) => {
   try {
-    const { teamId } = req.body;
+    const { teamId } = req.body; //const teamId=req.body.teamId -->이거랑 같음
 
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) return res.status(401).json({ message: "토큰 없음" });
@@ -105,6 +105,7 @@ app.post('/favorites', async (req, res) => {
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (err) {
+      console.err(err);
       return res.status(401).json({ message: "토큰 오류" });
     }
 
@@ -127,7 +128,36 @@ app.post('/favorites', async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "서버 에러(즐겨찾기)" });
+    res.status(500).json({ message: "서버 에러(즐겨찾기 추가)" });
+  }
+});
+//즐겨찾기 제거
+app.post('/favorites/delete', async (req, res) => {
+  try {
+    const { teamId } = req.body;
+
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "토큰 없음" });
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (e) {
+      console.error(e);
+      return res.status(401).json({ message: "토큰 오류" });
+    }
+
+    const userId = decoded.userId;
+
+    await pool.query(
+      "DELETE FROM favorite_team WHERE user_id=? AND favorite_team_id=?",
+      [userId, teamId]
+    );
+    return res.json({ message: "성공적으로 제거되었습니다." });
+
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ message: "서버에러(즐겨찾기 제거)" });
   }
 });
 //즐겨찾기 확인
@@ -140,7 +170,7 @@ app.get('/getfavorites', async(req, res)=>{
     } catch (err) {
     return res.status(401).json({ message: "토큰 오류" });
     }
-    userId=decoded.userId;
+    const userId=decoded.userId;
     const [rows]=await pool.query("SELECT favorite_team_id FROM favorite_team WHERE user_id=?",[userId]);
     const favoriteTeamIds = rows.map(r => r.favorite_team_id);
     res.json(favoriteTeamIds);
@@ -150,6 +180,7 @@ app.get('/getfavorites', async(req, res)=>{
     res.status(500).json({ message: "서버 에러(즐겨찾기)" });
   }
 })
+
 //한달 뒤까지 모든 일정 반환
 app.get('/api/event/', async(req, res)=>{
   const response = await fetch("https://apiv3.apifootball.com/?action=get_events&from="+todayString+ "&to="+nextMonthString+"&league_id=152&APIkey="+process.env.APIkey);
@@ -257,6 +288,7 @@ app.get('/api/teams/:leagueId', async(req, res)=>{
   res.json(jsonData.map(d=>({
     key:d.team_id,
     ranking:d.overall_league_position,
+    winningPoint:d.overall_league_PTS,
     name:d.team_name,
     logo:d.team_badge
   })))

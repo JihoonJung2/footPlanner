@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-
+import {deleteFavorites} from "./Favorites";
 
 import './FavoriteBox.css';
 
@@ -21,7 +20,10 @@ if(isLoggedIn){
             <li key={index}>
               <img onClick={()=>{changeSchedule(team.key);}} src={team.logo} alt={team.name} className="favorite-team-logo" />
               <span className="favorite-team-name">{team.name}</span>
-              <button className="delete-fav-btn">삭제</button>
+              <button onClick={()=>{
+                setFavoriteId(prev=>prev.filter(id=>id!==team.key));
+                deleteFavorites(team.key);
+              }}className="delete-fav-btn">삭제</button>
             </li>
           ))}
         </ul>
